@@ -8,63 +8,63 @@ public class InventoryStore
     private readonly ConcurrentBag<string> _history = new();
 
     public IEnumerable<Product> GetAllProducts() => _products.Values;
-    public Product? GetProduct(string sku) => _products.TryGetValue(sku, out var p) ? p : null;
+    public Product? GetProduct(string id) => _products.TryGetValue(id, out var p) ? p : null;
     public IEnumerable<string> GetHistory() => _history;
 
     public void AddProduct(Product product)
     {
-        if (_products.ContainsKey(product.Sku))
+        if (_products.ContainsKey(product.id))
             throw new Exception("Produto já existe.");
 
-        _products[product.Sku] = product;
-        _history.Add($"[{DateTime.UtcNow}] Produto criado: {product.Sku} - {product.Name}");
+        _products[product.id] = product;
+        _history.Add($"[{DateTime.UtcNow}] Produto criado: {product.id} - {product.Name}");
     }
 
-    public void RegisterEntry(string sku, int qty)
+    public void RegisterEntry(string id, int qty)
     {
-        if (!_products.ContainsKey(sku))
+        if (!_products.ContainsKey(id))
             throw new Exception("Produto não encontrado.");
 
-        _products[sku].Quantity += qty;
-        _history.Add($"[{DateTime.UtcNow}] Entrada: +{qty} unidades de {sku}");
+        _products[id].Quantity += qty;
+        _history.Add($"[{DateTime.UtcNow}] Entrada: +{qty} unidades de {id}");
     }
 
-    public void RegisterExit(string sku, int qty)
+    public void RegisterExit(string id, int qty)
     {
-        if (!_products.ContainsKey(sku))
+        if (!_products.ContainsKey(id))
             throw new Exception("Produto não encontrado.");
 
-        var product = _products[sku];
+        var product = _products[id];
         if (product.Quantity < qty)
             throw new Exception("Estoque insuficiente.");
 
         product.Quantity -= qty;
-        _history.Add($"[{DateTime.UtcNow}] Saída: -{qty} unidades de {sku}");
+        _history.Add($"[{DateTime.UtcNow}] Saída: -{qty} unidades de {id}");
 
         if (product.Quantity <= product.ReorderThreshold)
-            RegisterReorder(sku, 10);
+            RegisterReorder(id, 10);
     }
 
-    public void RegisterReorder(string sku, int qty)
+    public void RegisterReorder(string id, int qty)
     {
-        if (!_products.ContainsKey(sku))
+        if (!_products.ContainsKey(id))
             throw new Exception("Produto não encontrado.");
 
-        _products[sku].Quantity += qty;
-        _history.Add($"[{DateTime.UtcNow}] Reposição automática de {qty} unidades de {sku}");
+        _products[id].Quantity += qty;
+        _history.Add($"[{DateTime.UtcNow}] Reposição automática de {qty} unidades de {id}");
     }
 
-    public void DeleteProduct(string sku)
+    public void DeleteProduct(string id)
     {
-        if (_products.TryRemove(sku, out _))
-            _history.Add($"[{DateTime.UtcNow}] Produto removido: {sku}");
+        if (_products.TryRemove(id, out _))
+            _history.Add($"[{DateTime.UtcNow}] Produto removido: {id}");
     }
 
     public void Seed()
     {
         AddProduct(new Product
         {
-            Sku = "CAM-001",
+            id = "CAM-001",
             Name = "Camiseta Branca",
             Quantity = 20,
             ReorderThreshold = 5

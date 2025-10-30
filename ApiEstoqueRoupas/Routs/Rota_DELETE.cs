@@ -6,10 +6,10 @@ public static class Rota_DELETE
 {
     public static void MapDeleteRoutes(this WebApplication app, InventoryStore store)
     {
-        app.MapDelete("/api/products/{sku}", (string sku) =>
+        app.MapDelete("/api/products/{id}", (string id) =>
         {
-            store.DeleteProduct(sku);
-            return Results.Ok($"Produto {sku} removido.");
+            store.DeleteProduct(id);
+            return Results.Ok($"Produto {id} removido.");
         });
     }
 }

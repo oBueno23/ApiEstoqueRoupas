@@ -15,7 +15,7 @@ public static class Rota_POST
                     case "create_product":
                         store.AddProduct(new Product
                         {
-                            Sku = request.Sku ?? Guid.NewGuid().ToString(),
+                            id = request.id ?? Guid.NewGuid().ToString(),
                             Name = request.Name ?? "Produto sem nome",
                             Quantity = request.Quantity,
                             ReorderThreshold = request.ReorderThreshold
@@ -23,15 +23,15 @@ public static class Rota_POST
                         break;
 
                     case "entry":
-                        store.RegisterEntry(request.Sku!, request.Quantity);
+                        store.RegisterEntry(request.id!, request.Quantity);
                         break;
 
                     case "exit":
-                        store.RegisterExit(request.Sku!, request.Quantity);
+                        store.RegisterExit(request.id!, request.Quantity);
                         break;
 
                     case "reorder":
-                        store.RegisterReorder(request.Sku!, request.Quantity);
+                        store.RegisterReorder(request.id!, request.Quantity);
                         break;
 
                     default:
