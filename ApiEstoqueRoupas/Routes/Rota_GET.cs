@@ -6,10 +6,10 @@ public static class Rota_GET
 {
     public static void MapGetRoutes(this WebApplication app, InventoryStore store)
     {
-        // ✅ Listar todos os produtos
+        // Listar todos os produtos
         app.MapGet("/api/products", () => store.GetAllProducts());
 
-        // ✅ Buscar produto específico pelo ID
+        // Buscar produto específico pelo ID
         app.MapGet("/api/products/{id}", (string Id) =>
         {
             var product = store.GetProduct(Id);
@@ -18,7 +18,7 @@ public static class Rota_GET
                 : Results.Ok(product);
         });
 
-        // ✅ Histórico (opcional)
+        // Histórico (opcional)
         app.MapGet("/api/history", () => store.GetHistory());
     }
 }
