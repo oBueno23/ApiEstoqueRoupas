@@ -6,7 +6,7 @@ public static class Rota_POST
 {
     public static void MapPostRoutes(this WebApplication app, InventoryStore store)
     {
-        // ✅ Adicionar novo produto
+        
         app.MapPost("/api/products", (Product product) =>
         {
             if (string.IsNullOrWhiteSpace(product.Name))
