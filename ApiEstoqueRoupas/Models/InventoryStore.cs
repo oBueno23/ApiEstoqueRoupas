@@ -5,12 +5,12 @@ public class InventoryStore
     private List<Product> products = new();
     private List<string> history = new();
 
-    // ✅ Gera 50 registros iniciais com IDs manuais
+    
     public void Seed()
     {
         var produtosIniciais = new List<Product>
         {
-            // 👕 Camisas (P001–P015)
+            // Camisas (P001–P015)
             new Product { Id="P001", Name="Camisa Polo Azul", Quantity=25, InitialStock=25, ReorderThreshold=5 },
             new Product { Id="P002", Name="Camisa Social Branca", Quantity=40, InitialStock=40, ReorderThreshold=8 },
             new Product { Id="P003", Name="Camisa Estampada", Quantity=30, InitialStock=30, ReorderThreshold=6 },
@@ -27,7 +27,7 @@ public class InventoryStore
             new Product { Id="P014", Name="Camisa Amarela Casual", Quantity=23, InitialStock=23, ReorderThreshold=5 },
             new Product { Id="P015", Name="Camisa Azul Clara Slim", Quantity=25, InitialStock=25, ReorderThreshold=5 },
 
-            // 🧥 Jaquetas (P016–P025)
+            // Jaquetas (P016–P025)
             new Product { Id="P016", Name="Jaqueta Jeans Azul", Quantity=18, InitialStock=18, ReorderThreshold=4 },
             new Product { Id="P017", Name="Jaqueta Couro Preta", Quantity=10, InitialStock=10, ReorderThreshold=2 },
             new Product { Id="P018", Name="Jaqueta Corta-Vento Cinza", Quantity=12, InitialStock=12, ReorderThreshold=3 },
@@ -39,7 +39,7 @@ public class InventoryStore
             new Product { Id="P024", Name="Jaqueta Couro Marrom", Quantity=9, InitialStock=9, ReorderThreshold=2 },
             new Product { Id="P025", Name="Jaqueta Bomber Preta", Quantity=14, InitialStock=14, ReorderThreshold=3 },
 
-            // 👖 Calças (P026–P040)
+            // Calças (P026–P040)
             new Product { Id="P026", Name="Calça Jeans Azul", Quantity=35, InitialStock=35, ReorderThreshold=6 },
             new Product { Id="P027", Name="Calça Jeans Preta", Quantity=28, InitialStock=28, ReorderThreshold=5 },
             new Product { Id="P028", Name="Calça Moletom Cinza", Quantity=40, InitialStock=40, ReorderThreshold=8 },
@@ -56,7 +56,7 @@ public class InventoryStore
             new Product { Id="P039", Name="Calça Jeans Tradicional", Quantity=29, InitialStock=29, ReorderThreshold=5 },
             new Product { Id="P040", Name="Calça Jeans Reta Azul Escuro", Quantity=32, InitialStock=32, ReorderThreshold=6 },
 
-            // 🧦 Meias (P041–P050)
+            // Meias (P041–P050)
             new Product { Id="P041", Name="Meia Branca Cano Baixo", Quantity=60, InitialStock=60, ReorderThreshold=10 },
             new Product { Id="P042", Name="Meia Preta Esportiva", Quantity=55, InitialStock=55, ReorderThreshold=10 },
             new Product { Id="P043", Name="Meia Colorida Divertida", Quantity=40, InitialStock=40, ReorderThreshold=8 },
