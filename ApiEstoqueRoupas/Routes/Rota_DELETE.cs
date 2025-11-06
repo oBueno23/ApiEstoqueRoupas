@@ -1,19 +1,22 @@
 using ApiEstoqueRoupas.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace ApiEstoqueRoupas.Routes
+namespace ApiEstoqueRoupas.Routes;
+
+public static class Rota_DELETE
 {
-    public static class Rota_DELETE
+    public static void MapDeleteRoutes(this WebApplication app)
     {
-        public static void MapDeleteRoutes(this WebApplication app, InventoryStore store)
+        app.MapDelete("/api/products/{id:int}", async (int id, AppDbContext db) =>
         {
-            app.MapDelete("/api/products/{id:int}", (int id) =>
-            {
-                var product = store.GetProductById(id);
-                if (product is null) return Results.NotFound("Produto não encontrado.");
+            var product = await db.Products.FindAsync(id);
+            if (product is null) return Results.NotFound();
 
-                store.RemoveProduct(id); // método que você implementou
-                return Results.Ok($"Produto {product.Name} removido.");
-            });
-        }
+            db.Products.Remove(product);
+            await db.SaveChangesAsync();
+            return Results.Ok($"Produto {product.Name} removido.");
+        });
     }
 }
+
+

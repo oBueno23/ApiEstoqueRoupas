@@ -1,26 +1,27 @@
 using ApiEstoqueRoupas.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace ApiEstoqueRoupas.Routes
+namespace ApiEstoqueRoupas.Routes;
+
+public static class Rota_POST
 {
-    public static class Rota_POST
+    public static void MapPostRoutes(this WebApplication app)
     {
-        public static void MapPostRoutes(this WebApplication app, InventoryStore store)
+        app.MapPost("/api/products", async (Product product, AppDbContext db) =>
         {
-            app.MapPost("/api/products", (Product product) =>
-            {
-                if (product.Id == 0)
-                    return Results.BadRequest("O ID do produto deve ser informado e diferente de 0.");
+            if (product.Id == 0) return Results.BadRequest("Informe um Id inteiro diferente de 0.");
+            if (string.IsNullOrWhiteSpace(product.Name)) return Results.BadRequest("Nome obrigatório.");
 
-                if (string.IsNullOrWhiteSpace(product.Name))
-                    return Results.BadRequest("O nome do produto é obrigatório.");
+            var exists = await db.Products.AnyAsync(p => p.Id == product.Id);
+            if (exists) return Results.Conflict($"Produto com Id {product.Id} já existe.");
 
-                if (store.GetProductById(product.Id) != null)
-                    return Results.Conflict($"Já existe produto com Id {product.Id}.");
+            db.Products.Add(product);
+            await db.SaveChangesAsync();
 
-                store.AddProduct(product);
-                return Results.Created($"/api/products/{product.Id}", product);
-            });
-        }
+            return Results.Created($"/api/products/{product.Id}", product);
+        });
     }
 }
+
+
 
