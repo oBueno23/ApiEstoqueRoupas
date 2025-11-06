@@ -1,23 +1,24 @@
 using ApiEstoqueRoupas.Models;
-using ApiEstoqueRoupas.Routs;
+using ApiEstoqueRoupas.Routes; 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
+var store = new InventoryStore(); 
+store.SeedProducts(); 
 
-// Instancia o "banco" em memória e gera 50 produtos iniciais
-var store = new InventoryStore();
-store.Seed();
-
-// Mapeia as rotas do CRUD
 app.MapGetRoutes(store);
 app.MapPostRoutes(store);
 app.MapDeleteRoutes(store);
 
 app.Run();
-
-

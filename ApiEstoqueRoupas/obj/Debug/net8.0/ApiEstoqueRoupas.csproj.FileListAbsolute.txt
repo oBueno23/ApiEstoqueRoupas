@@ -24,3 +24,12 @@
 /Users/mac/ApiEstoqueRoupas/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.genruntimeconfig.cache
 /Users/mac/ApiEstoqueRoupas/ApiEstoqueRoupas/obj/Debug/net8.0/ref/ApiEstoqueRoupas.dll
 /Users/mac/ApiEstoqueRoupas/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.sourcelink.json
+/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.AssemblyInfoInputs.cache
+/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.AssemblyInfo.cs
+/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.csproj.CoreCompileInputs.cache
+/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.MvcApplicationPartsAssemblyInfo.cache
+/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.sourcelink.json
+/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.dll
+/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/obj/Debug/net8.0/refint/ApiEstoqueRoupas.dll
+/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.pdb

@@ -1,24 +1,18 @@
 using ApiEstoqueRoupas.Models;
 
-namespace ApiEstoqueRoupas.Routs;
-
-public static class Rota_GET
+namespace ApiEstoqueRoupas.Routes
 {
-    public static void MapGetRoutes(this WebApplication app, InventoryStore store)
+    public static class Rota_GET
     {
-        // Listar todos os produtos
-        app.MapGet("/api/products", () => store.GetAllProducts());
-
-        // Buscar produto específico pelo ID
-        app.MapGet("/api/products/{id}", (string Id) =>
+        public static void MapGetRoutes(this WebApplication app, InventoryStore store)
         {
-            var product = store.GetProduct(Id);
-            return product is null
-                ? Results.NotFound("Produto não encontrado.")
-                : Results.Ok(product);
-        });
+            app.MapGet("/api/products", () => store.GetAllProducts());
 
-        // Histórico (opcional)
-        app.MapGet("/api/history", () => store.GetHistory());
+            app.MapGet("/api/products/{id:int}", (int id) =>
+            {
+                var product = store.GetProductById(id);
+                return product is not null ? Results.Ok(product) : Results.NotFound("Produto não encontrado.");
+            });
+        }
     }
 }

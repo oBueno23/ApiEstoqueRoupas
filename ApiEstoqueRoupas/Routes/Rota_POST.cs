@@ -1,22 +1,26 @@
 using ApiEstoqueRoupas.Models;
 
-namespace ApiEstoqueRoupas.Routs;
-
-public static class Rota_POST
+namespace ApiEstoqueRoupas.Routes
 {
-    public static void MapPostRoutes(this WebApplication app, InventoryStore store)
+    public static class Rota_POST
     {
-        
-        app.MapPost("/api/products", (Product product) =>
+        public static void MapPostRoutes(this WebApplication app, InventoryStore store)
         {
-            if (string.IsNullOrWhiteSpace(product.Name))
-                return Results.BadRequest("O nome do produto é obrigatório.");
+            app.MapPost("/api/products", (Product product) =>
+            {
+                if (product.Id == 0)
+                    return Results.BadRequest("O ID do produto deve ser informado e diferente de 0.");
 
-            product.Id = Guid.NewGuid().ToString();
-            product.InitialStock = product.Quantity; // Define estoque inicial
-            store.AddProduct(product);
+                if (string.IsNullOrWhiteSpace(product.Name))
+                    return Results.BadRequest("O nome do produto é obrigatório.");
 
-            return Results.Created($"/api/products/{product.Id}", product);
-        });
+                if (store.GetProductById(product.Id) != null)
+                    return Results.Conflict($"Já existe produto com Id {product.Id}.");
+
+                store.AddProduct(product);
+                return Results.Created($"/api/products/{product.Id}", product);
+            });
+        }
     }
 }
+

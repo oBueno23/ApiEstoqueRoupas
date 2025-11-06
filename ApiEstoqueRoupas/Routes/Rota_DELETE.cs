@@ -1,20 +1,19 @@
 using ApiEstoqueRoupas.Models;
 
-namespace ApiEstoqueRoupas.Routs;
-
-public static class Rota_DELETE
+namespace ApiEstoqueRoupas.Routes
 {
-    public static void MapDeleteRoutes(this WebApplication app, InventoryStore store)
+    public static class Rota_DELETE
     {
-    
-        app.MapDelete("/api/products/{id}", (string Id) =>
+        public static void MapDeleteRoutes(this WebApplication app, InventoryStore store)
         {
-            var product = store.GetProduct(Id);
-            if (product is null)
-                return Results.NotFound("Produto não encontrado.");
+            app.MapDelete("/api/products/{id:int}", (int id) =>
+            {
+                var product = store.GetProductById(id);
+                if (product is null) return Results.NotFound("Produto não encontrado.");
 
-            store.DeleteProduct(Id);
-            return Results.Ok($"Produto '{product.Name}' removido com sucesso.");
-        });
+                store.RemoveProduct(id); // método que você implementou
+                return Results.Ok($"Produto {product.Name} removido.");
+            });
+        }
     }
 }
