@@ -30,7 +30,7 @@ using (var scope = app.Services.CreateScope())
     // Seed: insere 50 produtos se não houver nenhum
     if (!db.Products.Any())
     {
-        var produtos = GetInitialProducts(); /
+        var produtos = GetInitialProducts(); 
         db.Products.AddRange(produtos);
         db.SaveChanges();
     }
@@ -100,3 +100,4 @@ static List<Product> GetInitialProducts()
         new Product { Id = 50, Name = "Meias Básicas (par)", Quantity = 100, ReorderThreshold = 20 }
     };
 }
+
