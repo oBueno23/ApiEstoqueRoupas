@@ -8,18 +8,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=estoque.db"));
 
-   builder.Services.AddCors(options =>
+builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         policy => policy
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
+            .AllowAnyOrigin()  // Permite qualquer origem
+            .AllowAnyMethod()  // Permite GET, POST, DELETE, etc.
             .AllowAnyHeader());
 });
 
 var app = builder.Build();
 
 app.UseCors("AllowAll");
+
+// Configurar arquivos estáticos
+app.UseDefaultFiles(); // Procura por index.html, default.html, etc.
+app.UseStaticFiles(); 
 
 
 // Cria o banco e insere dados iniciais, se necessário
@@ -90,25 +94,25 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Rotas
-app.MapGet("/products", async (AppDbContext db) =>
+app.MapGet("/api/products", async (AppDbContext db) =>
     await db.Products.ToListAsync());
 
-app.MapGet("/products/{id:int}", async (int id, AppDbContext db) =>
+app.MapGet("/api/products/{id:int}", async (int id, AppDbContext db) =>
     await db.Products.FindAsync(id) is Product product
         ? Results.Ok(product)
         : Results.NotFound());
 
-app.MapPost("/products", async (Product product, AppDbContext db) =>
+app.MapPost("/api/products", async (Product product, AppDbContext db) =>
 {
     if (await db.Products.AnyAsync(p => p.Id == product.Id))
         return Results.BadRequest("Já existe um produto com esse ID.");
 
     db.Products.Add(product);
     await db.SaveChangesAsync();
-    return Results.Created($"/products/{product.Id}", product);
+    return Results.Created($"/api/products/{product.Id}", product);
 });
 
-app.MapDelete("/products/{id:int}", async (int id, AppDbContext db) =>
+app.MapDelete("/api/products/{id:int}", async (int id, AppDbContext db) =>
 {
     var product = await db.Products.FindAsync(id);
     if (product is null) return Results.NotFound();

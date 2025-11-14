@@ -1,11 +1,77 @@
 {
   "Version": 1,
-  "Hash": "s9EjLCK7UYbup7Een/r7kSh0zqiUPeNCK0swxg+t5Cw=",
+  "Hash": "I0fbupGQcVooMO6kf8J/8DLiZmA9m34DOwBDxOsZqRU=",
   "Source": "ApiEstoqueRoupas",
   "BasePath": "_content/ApiEstoqueRoupas",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "ApiEstoqueRoupas/wwwroot",
+      "Source": "ApiEstoqueRoupas",
+      "ContentRoot": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/wwwroot/",
+      "BasePath": "_content/ApiEstoqueRoupas",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/wwwroot/index.html",
+      "SourceId": "ApiEstoqueRoupas",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/wwwroot/",
+      "BasePath": "_content/ApiEstoqueRoupas",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/index.html"
+    },
+    {
+      "Identity": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/wwwroot/script.js",
+      "SourceId": "ApiEstoqueRoupas",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/wwwroot/",
+      "BasePath": "_content/ApiEstoqueRoupas",
+      "RelativePath": "script.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/script.js"
+    },
+    {
+      "Identity": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/wwwroot/style.css",
+      "SourceId": "ApiEstoqueRoupas",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/wwwroot/",
+      "BasePath": "_content/ApiEstoqueRoupas",
+      "RelativePath": "style.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/style.css"
+    }
+  ]
 }

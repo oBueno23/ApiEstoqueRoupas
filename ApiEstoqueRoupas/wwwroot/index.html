@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Estoque - Gestão de Roupas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">ESTOQUE</div>
+        <div class="user-profile">
+            <span class="user-name">Estoque</span>
+            <div class="user-avatar">ST</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>Gerenciamento</h3>
+                <button class="menu-btn active" onclick="showSection('cadastro')">
+                    <span class="icon"></span> CADASTRO
+                </button>
+                <button class="menu-btn" onclick="showSection('busca')">
+                    <span class="icon"></span> BUSCAR
+                </button>
+                <button class="menu-btn" onclick="showSection('todos')">
+                    <span class="icon"></span> TODOS ITENS
+                </button>
+            </div>
+            <div class="sidebar-section">
+                <h3>Estatísticas</h3>
+                <div class="stats-box">
+                    <div class="stat-item">
+                        <span class="stat-label">Total de Produtos</span>
+                        <span class="stat-value" id="totalProducts">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Estoque Baixo</span>
+                        <span class="stat-value warning" id="lowStock">0</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- SEÇÃO: CADASTRO -->
+            <section id="section-cadastro" class="content-section active">
+                <div class="form-section">
+                    <h1 class="page-title">Cadastrar Novo Item</h1>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="productId">ID do Produto *</label>
+                            <input type="number" id="productId" placeholder="Ex: 51" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productName">Nome do Produto *</label>
+                            <input type="text" id="productName" placeholder="Ex: Camisa Listrada" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productCategory">Categoria *</label>
+                            <select id="productCategory" required>
+                                <option value="">Selecione...</option>
+                                <option value="Camisas">Camisas</option>
+                                <option value="Calças">Calças</option>
+                                <option value="Jaquetas">Jaquetas</option>
+                                <option value="Meias">Meias</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productQuantity">Quantidade *</label>
+                            <input type="number" id="productQuantity" placeholder="Ex: 50" min="0" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productThreshold">Reposição Mínima *</label>
+                            <input type="number" id="productThreshold" placeholder="Ex: 10" min="1" value="5" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn-cadastrar" onclick="addProduct()">
+                            ✓ CADASTRAR PRODUTO
+                        </button>
+                        <button class="btn-limpar" onclick="clearForm()">
+                            ✕ LIMPAR CAMPOS
+                        </button>
+                    </div>
+                    
+                    <div id="cadastro-message" class="message-box" style="display: none;"></div>
+                </div>
+            </section>
+
+            <!-- SEÇÃO: BUSCAR -->
+            <section id="section-busca" class="content-section">
+                <div class="form-section">
+                    <h1 class="page-title">Buscar Item</h1>
+                    
+                    <div class="search-tabs">
+                        <button class="tab-btn active" onclick="switchSearchTab('id')">Buscar por ID</button>
+                        <button class="tab-btn" onclick="switchSearchTab('categoria')">Buscar por Categoria</button>
+                    </div>
+                    
+                    <!-- Busca por ID -->
+                    <div id="search-id" class="search-panel active">
+                        <div class="search-box">
+                            <input type="number" id="searchIdInput" placeholder="Digite o ID do produto...">
+                            <button class="btn-search" onclick="searchById()">BUSCAR</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Busca por Categoria -->
+                    <div id="search-categoria" class="search-panel">
+                        <div class="search-box">
+                            <select id="searchCategoryInput">
+                                <option value="">Selecione uma categoria...</option>
+                                <option value="Camisas">Camisas</option>
+                                <option value="Calças">Calças</option>
+                                <option value="Jaquetas">Jaquetas</option>
+                                <option value="Meias">Meias</option>
+                                <option value="Acessórios">Acessórios</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                            <button class="btn-search" onclick="searchByCategory()">BUSCAR</button>
+                        </div>
+                    </div>
+                    
+                    <div id="search-results" class="search-results">
+                        <p class="empty-message">Nenhuma busca realizada ainda.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEÇÃO: TODOS OS ITENS -->
+            <section id="section-todos" class="content-section">
+                <div class="form-section">
+                    <div class="section-header">
+                        <h1 class="page-title">Todos os Itens</h1>
+                        <button class="btn-refresh" onclick="loadAllProducts()">
+                                ATUALIZAR LISTA
+                        </button>
+                    </div>
+                    
+                    <div id="loading" class="loading-spinner" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Carregando produtos...</p>
+                    </div>
+                    
+                    <div id="error-message" class="error-message" style="display: none;"></div>
+                    
+                    <div class="products-table-container">
+                        <table class="products-table" id="productsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Categoria</th>
+                                    <th>Quantidade</th>
+                                    <th>Reposição Mín.</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productList">
+                                <!-- Produtos serão carregados aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

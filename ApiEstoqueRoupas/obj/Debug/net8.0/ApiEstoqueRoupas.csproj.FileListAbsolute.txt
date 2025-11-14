@@ -342,3 +342,4 @@
 /Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.pdb
 /Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.genruntimeconfig.cache
 /Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/obj/Debug/net8.0/ref/ApiEstoqueRoupas.dll
+/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/bin/Debug/net8.0/ApiEstoqueRoupas.staticwebassets.runtime.json

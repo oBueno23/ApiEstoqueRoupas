@@ -1,0 +1,33 @@
+{
+  "Files": [
+    {
+      "Id": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/wwwroot/index.html",
+      "PackagePath": "staticwebassets/index.html"
+    },
+    {
+      "Id": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/wwwroot/script.js",
+      "PackagePath": "staticwebassets/script.js"
+    },
+    {
+      "Id": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/wwwroot/style.css",
+      "PackagePath": "staticwebassets/style.css"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.ApiEstoqueRoupas.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.build.ApiEstoqueRoupas.props",
+      "PackagePath": "build\\ApiEstoqueRoupas.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.ApiEstoqueRoupas.props",
+      "PackagePath": "buildMultiTargeting\\ApiEstoqueRoupas.props"
+    },
+    {
+      "Id": "obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.ApiEstoqueRoupas.props",
+      "PackagePath": "buildTransitive\\ApiEstoqueRoupas.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
