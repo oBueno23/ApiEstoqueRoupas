@@ -1,19 +1,21 @@
+using ApiEstoqueRoupas.Data;
 using ApiEstoqueRoupas.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ApiEstoqueRoupas.Routes;
-
-public static class Rota_GET
+namespace ApiEstoqueRoupas.Routes
 {
-    public static void MapGetRoutes(this WebApplication app)
+    public static class Rota_GET
     {
-        app.MapGet("/api/products", async (AppDbContext db) =>
-            await db.Products.AsNoTracking().ToListAsync());
-
-        app.MapGet("/api/products/{id:int}", async (int id, AppDbContext db) =>
+        public static void Map(WebApplication app)
         {
-            var product = await db.Products.FindAsync(id);
-            return product is not null ? Results.Ok(product) : Results.NotFound();
-        });
+            app.MapGet("/produtos", async (AppDbContext db) =>
+                await db.Products.AsNoTracking().ToListAsync());
+
+            app.MapGet("/produtos/{id:int}", async (int id, AppDbContext db) =>
+            {
+                var p = await db.Products.FindAsync(id);
+                return p is not null ? Results.Ok(p) : Results.NotFound();
+            });
+        }
     }
 }

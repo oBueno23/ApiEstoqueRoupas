@@ -1,18 +1,11 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ApiEstoqueRoupas.Models;
-
-public class Product
+namespace ApiEstoqueRoupas.Models
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.None)] 
-    public int Id { get; set; }
-
-    [Required]
-    public string Name { get; set; } = string.Empty;
-
-    public int Quantity { get; set; }
-
-    public int ReorderThreshold { get; set; }
+    public class Product
+    {
+        public int Id { get; set; }                         // ID manual (não gerado automaticamente)
+        public string Name { get; set; } = string.Empty;     // Nome do produto
+        public string Category { get; set; } = string.Empty; // Categoria (ex: Camiseta, Calça, etc.)
+        public int Quantity { get; set; }                    // Quantidade em estoque
+        public int ReorderThreshold { get; set; }            // Quantidade mínima antes de repor
+    }
 }

@@ -3460,11 +3460,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/ApiEstoqueRoupas.csproj",
+      "projectUniqueName": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/ApiEstoqueRoupas.csproj",
       "projectName": "ApiEstoqueRoupas",
-      "projectPath": "/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/ApiEstoqueRoupas.csproj",
+      "projectPath": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/ApiEstoqueRoupas.csproj",
       "packagesPath": "/Users/mac/.nuget/packages/",
-      "outputPath": "/Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/obj/",
+      "outputPath": "/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/mac/.nuget/NuGet/NuGet.Config"

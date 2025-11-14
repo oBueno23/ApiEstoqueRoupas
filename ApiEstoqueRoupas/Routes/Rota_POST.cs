@@ -1,27 +1,25 @@
+using ApiEstoqueRoupas.Data;
 using ApiEstoqueRoupas.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ApiEstoqueRoupas.Routes;
-
-public static class Rota_POST
+namespace ApiEstoqueRoupas.Routes
 {
-    public static void MapPostRoutes(this WebApplication app)
+    public static class Rota_POST
     {
-        app.MapPost("/api/products", async (Product product, AppDbContext db) =>
+        public static void Map(WebApplication app)
         {
-            if (product.Id == 0) return Results.BadRequest("Informe um Id inteiro diferente de 0.");
-            if (string.IsNullOrWhiteSpace(product.Name)) return Results.BadRequest("Nome obrigatório.");
+            app.MapPost("/produtos", async (Product novoProduto, AppDbContext db) =>
+            {
+                if (novoProduto.Id == 0) return Results.BadRequest("Informe um Id inteiro diferente de 0.");
+                if (string.IsNullOrWhiteSpace(novoProduto.Name)) return Results.BadRequest("Nome obrigatório.");
 
-            var exists = await db.Products.AnyAsync(p => p.Id == product.Id);
-            if (exists) return Results.Conflict($"Produto com Id {product.Id} já existe.");
+                if (await db.Products.AnyAsync(x => x.Id == novoProduto.Id))
+                    return Results.Conflict($"Produto com ID {novoProduto.Id} já existe.");
 
-            db.Products.Add(product);
-            await db.SaveChangesAsync();
-
-            return Results.Created($"/api/products/{product.Id}", product);
-        });
+                db.Products.Add(novoProduto);
+                await db.SaveChangesAsync();
+                return Results.Created($"/produtos/{novoProduto.Id}", novoProduto);
+            });
+        }
     }
 }
-
-
-
