@@ -1,28 +1,34 @@
-const API_URL = 'http://localhost:5123/api/products';
+const API_URL = 'http://localhost:5123/api';
 
-// Carrega os produtos quando a página é carregada
+// Carrega dados ao iniciar
 document.addEventListener('DOMContentLoaded', () => {
     loadAllProducts();
     updateStats();
+    loadRestockAlerts();
+    updateAlertsBadge();
+    
+    // Atualiza estatísticas a cada 30 segundos
+    setInterval(() => {
+        updateStats();
+        updateAlertsBadge();
+    }, 30000);
 });
 
-// ===== NAVEGAÇÃO ENTRE SEÇÕES =====
+// ===== NAVEGAÇÃO =====
 function showSection(sectionName) {
-    // Remove active de todos os botões e seções
     document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
     
-    // Ativa a seção selecionada
     document.getElementById(`section-${sectionName}`).classList.add('active');
     event.target.closest('.menu-btn').classList.add('active');
     
-    // Se for a seção "todos", carrega os produtos
-    if (sectionName === 'todos') {
-        loadAllProducts();
-    }
+    // Carrega dados específicos da seção
+    if (sectionName === 'todos') loadAllProducts();
+    if (sectionName === 'historico') loadMovements();
+    if (sectionName === 'alertas') loadRestockAlerts();
 }
 
-// ===== CADASTRO DE PRODUTO =====
+// ===== CADASTRO (mantido) =====
 async function addProduct() {
     const id = parseInt(document.getElementById('productId').value);
     const name = document.getElementById('productName').value.trim();
@@ -30,279 +36,371 @@ async function addProduct() {
     const quantity = parseInt(document.getElementById('productQuantity').value);
     const threshold = parseInt(document.getElementById('productThreshold').value);
     
-    // Validação
     if (!id || !name || !category || isNaN(quantity) || isNaN(threshold)) {
-        showMessage('cadastro-message', 'Por favor, preencha todos os campos obrigatórios!', 'error');
+        showMessage('cadastro-message', 'Preencha todos os campos!', 'error');
         return;
     }
     
-    const product = {
-        id: id,
-        name: name,
-        category: category,
-        quantity: quantity,
-        reorderThreshold: threshold
-    };
-    
     try {
-        const response = await fetch(API_URL, {
+        const response = await fetch(`${API_URL}/products`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(product)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, name, category, quantity, reorderThreshold: threshold })
         });
         
-        if (!response.ok) {
-            const error = await response.text();
-            throw new Error(error || 'Erro ao cadastrar produto');
-        }
+        if (!response.ok) throw new Error(await response.text());
         
-        showMessage('cadastro-message', `✓ Produto "${name}" cadastrado com sucesso!`, 'success');
+        showMessage('cadastro-message', `✓ Produto "${name}" cadastrado!`, 'success');
         clearForm();
         updateStats();
-        
     } catch (error) {
-        console.error('Erro:', error);
         showMessage('cadastro-message', '✕ ' + error.message, 'error');
     }
 }
 
-// Limpa o formulário
 function clearForm() {
-    document.getElementById('productId').value = '';
-    document.getElementById('productName').value = '';
+    ['productId', 'productName', 'productQuantity'].forEach(id => 
+        document.getElementById(id).value = '');
     document.getElementById('productCategory').value = '';
-    document.getElementById('productQuantity').value = '';
     document.getElementById('productThreshold').value = '5';
 }
 
-// ===== BUSCAR PRODUTOS =====
-function switchSearchTab(tab) {
-    // Remove active dos botões e painéis
+// ===== MOVIMENTAÇÃO DE ESTOQUE =====
+function switchMovementTab(type) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.search-panel').forEach(panel => panel.classList.remove('active'));
+    document.querySelectorAll('.movement-panel').forEach(panel => panel.classList.remove('active'));
     
-    // Ativa o tab selecionado
     event.target.classList.add('active');
-    document.getElementById(`search-${tab}`).classList.add('active');
-    
-    // Limpa resultados
-    document.getElementById('search-results').innerHTML = '<p class="empty-message">Nenhuma busca realizada ainda.</p>';
+    document.getElementById(`movement-${type}`).classList.add('active');
 }
 
-// Busca por ID
-async function searchById() {
-    const id = document.getElementById('searchIdInput').value;
+// Registrar ENTRADA
+async function registerEntry() {
+    const productId = parseInt(document.getElementById('entryProductId').value);
+    const quantity = parseInt(document.getElementById('entryQuantity').value);
+    const reason = document.getElementById('entryReason').value;
+    const user = document.getElementById('entryUser').value;
     
-    if (!id) {
-        alert('Digite um ID para buscar!');
+    if (!productId || !quantity || quantity <= 0) {
+        showMessage('movement-message', 'Preencha ID e quantidade válidos!', 'error');
         return;
     }
     
     try {
-        const response = await fetch(`${API_URL}/${id}`);
+        const response = await fetch(`${API_URL}/stock/entry`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId, quantity, reason, user })
+        });
         
-        if (!response.ok) {
-            throw new Error('Produto não encontrado');
-        }
+        if (!response.ok) throw new Error(await response.text());
         
-        const product = await response.json();
-        displaySearchResults([product]);
+        const data = await response.json();
+        showMessage('movement-message', `✓ ${data.message}`, 'success');
         
-    } catch (error) {
-        document.getElementById('search-results').innerHTML = 
-            `<div class="error-message" style="display: block;">✕ ${error.message}</div>`;
-    }
-}
-
-// Busca por Categoria
-async function searchByCategory() {
-    const category = document.getElementById('searchCategoryInput').value;
-    
-    if (!category) {
-        alert('Selecione uma categoria para buscar!');
-        return;
-    }
-    
-    try {
-        const response = await fetch(API_URL);
-        
-        if (!response.ok) {
-            throw new Error('Erro ao buscar produtos');
-        }
-        
-        const allProducts = await response.json();
-        const filteredProducts = allProducts.filter(p => p.category === category);
-        
-        if (filteredProducts.length === 0) {
-            document.getElementById('search-results').innerHTML = 
-                '<p class="empty-message">Nenhum produto encontrado nesta categoria.</p>';
-        } else {
-            displaySearchResults(filteredProducts);
-        }
-        
-    } catch (error) {
-        document.getElementById('search-results').innerHTML = 
-            `<div class="error-message" style="display: block;">✕ ${error.message}</div>`;
-    }
-}
-
-// Exibe resultados da busca
-function displaySearchResults(products) {
-    const resultsDiv = document.getElementById('search-results');
-    
-    resultsDiv.innerHTML = `
-        <h3 class="results-title">Resultados (${products.length})</h3>
-        <div class="results-grid">
-            ${products.map(product => `
-                <div class="product-card">
-                    <div class="card-header">
-                        <span class="card-id">#${product.id}</span>
-                        ${product.quantity <= product.reorderThreshold ? 
-                            '<span class="badge badge-warning">⚠️ Estoque Baixo</span>' : 
-                            '<span class="badge badge-ok">✓ OK</span>'}
-                    </div>
-                    <h3 class="card-title">${product.name}</h3>
-                    <div class="card-info">
-                        <p><strong>Categoria:</strong> ${product.category}</p>
-                        <p><strong>Quantidade:</strong> ${product.quantity}</p>
-                        <p><strong>Reposição Mín.:</strong> ${product.reorderThreshold}</p>
-                    </div>
-                    <button class="btn-delete-card" onclick="deleteProduct(${product.id})">
-                        🗑️ DELETAR
-                    </button>
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
-
-// ===== LISTAR TODOS OS PRODUTOS =====
-async function loadAllProducts() {
-    const loading = document.getElementById('loading');
-    const errorMessage = document.getElementById('error-message');
-    const productList = document.getElementById('productList');
-    
-    loading.style.display = 'flex';
-    errorMessage.style.display = 'none';
-    
-    try {
-        const response = await fetch(API_URL);
-        
-        if (!response.ok) {
-            throw new Error('Erro ao carregar produtos');
-        }
-        
-        const products = await response.json();
-        
-        productList.innerHTML = '';
-        
-        if (products.length === 0) {
-            productList.innerHTML = '<tr><td colspan="7" class="empty-message">Nenhum produto cadastrado</td></tr>';
-        } else {
-            products.forEach(product => {
-                const lowStock = product.quantity <= product.reorderThreshold;
-                const statusClass = lowStock ? 'status-low' : 'status-ok';
-                const statusText = lowStock ? '⚠️ Baixo' : '✓ OK';
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>#${product.id}</strong></td>
-                    <td>${product.name}</td>
-                    <td><span class="category-badge">${product.category}</span></td>
-                    <td><strong>${product.quantity}</strong></td>
-                    <td>${product.reorderThreshold}</td>
-                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                    <td>
-                        <button class="btn-delete" onclick="deleteProduct(${product.id}, true)">
-                            🗑️ DELETAR
-                        </button>
-                    </td>
-                `;
-                productList.appendChild(row);
-            });
-        }
+        // Limpa campos
+        document.getElementById('entryProductId').value = '';
+        document.getElementById('entryQuantity').value = '';
         
         updateStats();
-        
+        loadAllProducts();
     } catch (error) {
-        console.error('Erro:', error);
-        errorMessage.textContent = '✕ Erro ao carregar produtos. Tente novamente.';
-        errorMessage.style.display = 'block';
-    } finally {
-        loading.style.display = 'none';
+        showMessage('movement-message', '✕ ' + error.message, 'error');
     }
 }
 
-// ===== DELETAR PRODUTO =====
-async function deleteProduct(id, reload = false) {
-    if (!confirm('Tem certeza que deseja deletar este produto?')) {
+// Registrar SAÍDA
+async function registerExit() {
+    const productId = parseInt(document.getElementById('exitProductId').value);
+    const quantity = parseInt(document.getElementById('exitQuantity').value);
+    const reason = document.getElementById('exitReason').value;
+    const user = document.getElementById('exitUser').value;
+    
+    if (!productId || !quantity || quantity <= 0) {
+        showMessage('movement-message', 'Preencha ID e quantidade válidos!', 'error');
         return;
     }
     
     try {
-        const response = await fetch(`${API_URL}/${id}`, {
-            method: 'DELETE'
+        const response = await fetch(`${API_URL}/stock/exit`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId, quantity, reason, user })
         });
         
         if (!response.ok) {
-            throw new Error('Erro ao deletar produto');
+            const error = await response.json();
+            throw new Error(error.message || 'Erro ao registrar saída');
         }
         
-        alert('✓ Produto deletado com sucesso!');
+        const data = await response.json();
+        const messageType = data.needsRestock ? 'warning' : 'success';
+        showMessage('movement-message', data.message, messageType);
         
-        if (reload) {
-            loadAllProducts();
-        } else {
-            // Remove do resultado da busca
-            event.target.closest('.product-card').remove();
-        }
+        // Limpa campos
+        document.getElementById('exitProductId').value = '';
+        document.getElementById('exitQuantity').value = '';
         
         updateStats();
+        loadAllProducts();
+        
+        if (data.needsRestock) {
+            setTimeout(() => loadRestockAlerts(), 500);
+        }
+    } catch (error) {
+        showMessage('movement-message', '✕ ' + error.message, 'error');
+    }
+}
+
+// ===== HISTÓRICO =====
+let currentFilter = 'all';
+
+async function loadMovements(type = currentFilter) {
+    currentFilter = type;
+    const container = document.getElementById('movements-container');
+    container.innerHTML = '<p class="empty-message">Carregando...</p>';
+    
+    try {
+        const url = type === 'all' 
+            ? `${API_URL}/stock/movements`
+            : `${API_URL}/stock/movements?type=${type}`;
+            
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Erro ao carregar histórico');
+        
+        const movements = await response.json();
+        
+        if (movements.length === 0) {
+            container.innerHTML = '<p class="empty-message">Nenhuma movimentação encontrada</p>';
+            return;
+        }
+        
+        container.innerHTML = movements.map(m => `
+            <div class="movement-card ${m.type.toLowerCase()}">
+                <div class="movement-header">
+                    <span class="movement-type ${m.type.toLowerCase()}">${m.type === 'ENTRADA' ? '📥' : '📤'} ${m.type}</span>
+                    <span class="movement-date">${formatDate(m.date)}</span>
+                </div>
+                <h3>${m.productName}</h3>
+                <div class="movement-details">
+                    <p><strong>Quantidade:</strong> ${m.quantity}</p>
+                    <p><strong>Estoque:</strong> ${m.stockBefore} → ${m.stockAfter}</p>
+                    <p><strong>Motivo:</strong> ${m.reason}</p>
+                    <p><strong>Usuário:</strong> ${m.user}</p>
+                </div>
+            </div>
+        `).join('');
         
     } catch (error) {
-        console.error('Erro:', error);
-        alert('✕ Erro ao deletar produto. Tente novamente.');
+        container.innerHTML = `<p class="error-message">✕ ${error.message}</p>`;
+    }
+}
+
+function filterMovements(type) {
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    loadMovements(type);
+}
+
+// ===== ALERTAS DE REPOSIÇÃO =====
+async function loadRestockAlerts() {
+    const container = document.getElementById('alerts-container');
+    container.innerHTML = '<p class="empty-message">Carregando...</p>';
+    
+    try {
+        const response = await fetch(`${API_URL}/stock/restock-alerts`);
+        if (!response.ok) throw new Error('Erro ao carregar alertas');
+        
+        const data = await response.json();
+        
+        if (data.count === 0) {
+            container.innerHTML = '<p class="empty-message">✓ Nenhum produto precisa de reposição!</p>';
+            return;
+        }
+        
+        container.innerHTML = data.alerts.map(alert => `
+            <div class="alert-card ${alert.alertLevel.toLowerCase()}">
+                <div class="alert-icon">${alert.alertLevel === 'CRITICAL' ? '🔴' : '⚠️'}</div>
+                <div class="alert-content">
+                    <h3>${alert.productName}</h3>
+                    <span class="alert-category">${alert.category}</span>
+                    <div class="alert-details">
+                        <p><strong>Estoque Atual:</strong> ${alert.currentStock}</p>
+                        <p><strong>Estoque Mínimo:</strong> ${alert.reorderThreshold}</p>
+                        <p class="suggestion">💡 Sugestão: Comprar ${alert.suggestedOrderQuantity} unidades</p>
+                    </div>
+                    <button class="btn-restock" onclick="quickRestock(${alert.productId}, ${alert.suggestedOrderQuantity})">
+                        📥 REABASTECER
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        container.innerHTML = `<p class="error-message">✕ ${error.message}</p>`;
+    }
+}
+
+async function quickRestock(productId, quantity) {
+    if (!confirm(`Reabastecer com ${quantity} unidades?`)) return;
+    
+    try {
+        const response = await fetch(`${API_URL}/stock/entry`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                productId,
+                quantity,
+                reason: 'Reabastecimento automático',
+                user: 'Sistema'
+            })
+        });
+        
+        if (!response.ok) throw new Error('Erro ao reabastecer');
+        
+        alert('✓ Reabastecimento realizado com sucesso!');
+        loadRestockAlerts();
+        updateStats();
+    } catch (error) {
+        alert('✕ ' + error.message);
+    }
+}
+
+async function updateAlertsBadge() {
+    try {
+        const response = await fetch(`${API_URL}/stock/restock-alerts`);
+        const data = await response.json();
+        
+        const badge = document.getElementById('alertBadge');
+        badge.textContent = data.count;
+        badge.className = data.count > 0 ? 'alert-badge active' : 'alert-badge';
+    } catch (error) {
+        console.error('Erro ao atualizar badge:', error);
     }
 }
 
 // ===== ESTATÍSTICAS =====
 async function updateStats() {
     try {
-        const response = await fetch(API_URL);
-        
+        const response = await fetch(`${API_URL}/stock/report`);
         if (!response.ok) return;
         
-        const products = await response.json();
+        const stats = await response.json();
         
-        document.getElementById('totalProducts').textContent = products.length;
-        
-        const lowStockCount = products.filter(p => p.quantity <= p.reorderThreshold).length;
-        document.getElementById('lowStock').textContent = lowStockCount;
+        document.getElementById('totalProducts').textContent = stats.totalProducts;
+        document.getElementById('lowStock').textContent = stats.lowStockCount;
+        document.getElementById('todayEntries').textContent = stats.todayEntries;
+        document.getElementById('todayExits').textContent = stats.todayExits;
         
     } catch (error) {
         console.error('Erro ao atualizar estatísticas:', error);
     }
 }
 
-// ===== MENSAGENS =====
+// ===== LISTAR PRODUTOS (mantido com pequenas melhorias) =====
+async function loadAllProducts() {
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('error-message');
+    const productList = document.getElementById('productList');
+    
+    if (loading) loading.style.display = 'flex';
+    if (errorMessage) errorMessage.style.display = 'none';
+    
+    try {
+        const response = await fetch(`${API_URL}/products`);
+        if (!response.ok) throw new Error('Erro ao carregar produtos');
+        
+        const products = await response.json();
+        
+        if (productList) {
+            productList.innerHTML = '';
+            
+            if (products.length === 0) {
+                productList.innerHTML = '<tr><td colspan="7" class="empty-message">Nenhum produto cadastrado</td></tr>';
+            } else {
+                products.forEach(product => {
+                    const lowStock = product.quantity <= product.reorderThreshold;
+                    const outOfStock = product.quantity === 0;
+                    
+                    let statusClass, statusText;
+                    if (outOfStock) {
+                        statusClass = 'status-critical';
+                        statusText = '🔴 ESGOTADO';
+                    } else if (lowStock) {
+                        statusClass = 'status-low';
+                        statusText = '⚠️ Baixo';
+                    } else {
+                        statusClass = 'status-ok';
+                        statusText = '✓ OK';
+                    }
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>#${product.id}</strong></td>
+                        <td>${product.name}</td>
+                        <td><span class="category-badge">${product.category}</span></td>
+                        <td><strong>${product.quantity}</strong></td>
+                        <td>${product.reorderThreshold}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <button class="btn-delete" onclick="deleteProduct(${product.id}, true)">
+                                🗑️
+                            </button>
+                        </td>
+                    `;
+                    productList.appendChild(row);
+                });
+            }
+        }
+        
+        updateStats();
+        
+    } catch (error) {
+        console.error('Erro:', error);
+        if (errorMessage) {
+            errorMessage.textContent = '✕ ' + error.message;
+            errorMessage.style.display = 'block';
+        }
+    } finally {
+        if (loading) loading.style.display = 'none';
+    }
+}
+
+// ===== DELETAR PRODUTO (mantido) =====
+async function deleteProduct(id, reload = false) {
+    if (!confirm('Deletar este produto?')) return;
+    
+    try {
+        const response = await fetch(`${API_URL}/products/${id}`, { method: 'DELETE' });
+        if (!response.ok) throw new Error('Erro ao deletar');
+        
+        alert('✓ Produto deletado!');
+        if (reload) loadAllProducts();
+        updateStats();
+    } catch (error) {
+        alert('✕ ' + error.message);
+    }
+}
+
+// ===== UTILITÁRIOS =====
 function showMessage(elementId, message, type) {
     const messageBox = document.getElementById(elementId);
+    if (!messageBox) return;
+    
     messageBox.className = `message-box ${type}`;
     messageBox.textContent = message;
     messageBox.style.display = 'block';
     
-    setTimeout(() => {
-        messageBox.style.display = 'none';
-    }, 5000);
+    setTimeout(() => messageBox.style.display = 'none', 5000);
 }
 
-// Enter para buscar
-document.getElementById('searchIdInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') searchById();
-});
-
-document.getElementById('productThreshold').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') addProduct();
-});
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}

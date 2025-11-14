@@ -185,6 +185,7 @@
 /Users/mac/ApiEstoqueRoupas-1/ApiEstoqueRoupas/obj/Debug/net8.0/ref/ApiEstoqueRoupas.dll
 /Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/bin/Debug/net8.0/appsettings.Development.json
 /Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/bin/Debug/net8.0/appsettings.json
+/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/bin/Debug/net8.0/ApiEstoqueRoupas.staticwebassets.runtime.json
 /Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/bin/Debug/net8.0/ApiEstoqueRoupas
 /Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/bin/Debug/net8.0/ApiEstoqueRoupas.deps.json
 /Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/bin/Debug/net8.0/ApiEstoqueRoupas.runtimeconfig.json
@@ -342,4 +343,3 @@
 /Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.pdb
 /Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/obj/Debug/net8.0/ApiEstoqueRoupas.genruntimeconfig.cache
 /Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/obj/Debug/net8.0/ref/ApiEstoqueRoupas.dll
-/Users/mac/ApiEstoqueRoupas-3/ApiEstoqueRoupas/bin/Debug/net8.0/ApiEstoqueRoupas.staticwebassets.runtime.json

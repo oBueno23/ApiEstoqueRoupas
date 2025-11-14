@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ApiEstoqueRoupas")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+35e03504e5025c15de53039e00efbcb179b5d2a4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+71b7673cf4225507ed95a5c6bb1293d1438517ea")]
 [assembly: System.Reflection.AssemblyProductAttribute("ApiEstoqueRoupas")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ApiEstoqueRoupas")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
