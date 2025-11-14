@@ -9,7 +9,7 @@ body {
     background-color: #f5f5f5;
 }
 
-/* ===== HEADER ===== */
+/*  HEADER  */
 header {
     background-color: #fff;
     padding: 15px 30px;
@@ -53,13 +53,13 @@ header {
     font-size: 14px;
 }
 
-/* ===== CONTAINER ===== */
+/*  CONTAINER  */
 .container {
     display: flex;
     height: calc(100vh - 75px);
 }
 
-/* ===== SIDEBAR ===== */
+/*  SIDEBAR  */
 .sidebar {
     width: 280px;
     background-color: #fff;
@@ -148,7 +148,7 @@ header {
     color: #e74c3c;
 }
 
-/* ===== MAIN CONTENT ===== */
+/*  MAIN CONTENT  */
 .main-content {
     flex: 1;
     padding: 30px;
@@ -191,7 +191,7 @@ header {
     margin-bottom: 25px;
 }
 
-/* ===== FORMULÁRIO ===== */
+/*  FORMULÁRIO  */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -281,10 +281,10 @@ header {
 
 .btn-refresh:hover {
     background-color: #2980b9;
-    transform: rotate(180deg);
+    transform: scale(1.05);
 }
 
-/* ===== BUSCA ===== */
+/*  BUSCA  */
 .search-tabs {
     display: flex;
     gap: 10px;
@@ -353,7 +353,7 @@ header {
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
-/* ===== RESULTADOS DA BUSCA ===== */
+/*  RESULTADOS DA BUSCA  */
 .search-results {
     margin-top: 25px;
 }
@@ -447,7 +447,7 @@ header {
     background-color: #c0392b;
 }
 
-/* ===== TABELA ===== */
+/*  TABELA  */
 .products-table-container {
     overflow-x: auto;
 }
@@ -527,7 +527,7 @@ header {
     transform: scale(1.05);
 }
 
-/* ===== MENSAGENS ===== */
+/*  MENSAGENS  */
 .message-box {
     padding: 15px 20px;
     border-radius: 8px;
@@ -566,7 +566,7 @@ header {
     font-weight: 500;
 }
 
-/* ===== LOADING ===== */
+/*  LOADING  */
 .loading-spinner {
     display: flex;
     flex-direction: column;
@@ -589,7 +589,7 @@ header {
     to { transform: rotate(360deg); }
 }
 
-/* ===== RESPONSIVE ===== */
+/*  RESPONSIVE  */
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
@@ -608,7 +608,7 @@ header {
     }
 }
 
-/* ===== HEADER COM ALERTAS ===== */
+/*  HEADER COM ALERTAS  */
 .alerts-header {
     display: flex;
     align-items: center;
@@ -644,7 +644,7 @@ header {
     50% { transform: scale(1.1); }
 }
 
-/* ===== ESTATÍSTICAS COLORIDAS ===== */
+/*  ESTATÍSTICAS COLORIDAS  */
 .stat-value.success {
     color: #28a745;
 }
@@ -653,7 +653,7 @@ header {
     color: #dc3545;
 }
 
-/* ===== TABS DE MOVIMENTAÇÃO ===== */
+/*  TABS DE MOVIMENTAÇÃO  */
 .movement-tabs {
     display: flex;
     gap: 15px;
@@ -888,7 +888,7 @@ header {
     box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
 }
 
-/* ===== STATUS CRÍTICO ===== */
+/*  STATUS CRÍTICO  */
 .status-critical {
     background-color: #dc3545 !important;
     color: white !important;
@@ -900,14 +900,14 @@ header {
     50% { opacity: 0.7; }
 }
 
-/* ===== MESSAGE BOX WARNING ===== */
+/*  MESSAGE BOX WARNING  */
 .message-box.warning {
     background-color: #fff3cd;
     color: #856404;
     border-left: 4px solid #ffc107;
 }
 
-/* ===== RESPONSIVO ===== */
+/*  RESPONSIVO  */
 @media (max-width: 768px) {
     .movements-list,
     .alerts-grid {

@@ -33,7 +33,6 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     
-    context.Database.EnsureDeleted(); // Remove apenas na primeira vez
     context.Database.EnsureCreated();
 
     if (!context.Products.Any())

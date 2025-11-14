@@ -7,14 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     loadRestockAlerts();
     updateAlertsBadge();
     
-    // Atualiza estatísticas a cada 30 segundos
     setInterval(() => {
         updateStats();
         updateAlertsBadge();
     }, 30000);
 });
 
-// ===== NAVEGAÇÃO =====
+//  NAVEGAÇÃO 
 function showSection(sectionName) {
     document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
@@ -22,13 +21,12 @@ function showSection(sectionName) {
     document.getElementById(`section-${sectionName}`).classList.add('active');
     event.target.closest('.menu-btn').classList.add('active');
     
-    // Carrega dados específicos da seção
     if (sectionName === 'todos') loadAllProducts();
     if (sectionName === 'historico') loadMovements();
     if (sectionName === 'alertas') loadRestockAlerts();
 }
 
-// ===== CADASTRO (mantido) =====
+//  CADASTRO 
 async function addProduct() {
     const id = parseInt(document.getElementById('productId').value);
     const name = document.getElementById('productName').value.trim();
@@ -65,7 +63,7 @@ function clearForm() {
     document.getElementById('productThreshold').value = '5';
 }
 
-// ===== MOVIMENTAÇÃO DE ESTOQUE =====
+//  MOVIMENTAÇÃO 
 function switchMovementTab(type) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.movement-panel').forEach(panel => panel.classList.remove('active'));
@@ -74,7 +72,6 @@ function switchMovementTab(type) {
     document.getElementById(`movement-${type}`).classList.add('active');
 }
 
-// Registrar ENTRADA
 async function registerEntry() {
     const productId = parseInt(document.getElementById('entryProductId').value);
     const quantity = parseInt(document.getElementById('entryQuantity').value);
@@ -98,7 +95,6 @@ async function registerEntry() {
         const data = await response.json();
         showMessage('movement-message', `✓ ${data.message}`, 'success');
         
-        // Limpa campos
         document.getElementById('entryProductId').value = '';
         document.getElementById('entryQuantity').value = '';
         
@@ -109,7 +105,6 @@ async function registerEntry() {
     }
 }
 
-// Registrar SAÍDA
 async function registerExit() {
     const productId = parseInt(document.getElementById('exitProductId').value);
     const quantity = parseInt(document.getElementById('exitQuantity').value);
@@ -137,7 +132,6 @@ async function registerExit() {
         const messageType = data.needsRestock ? 'warning' : 'success';
         showMessage('movement-message', data.message, messageType);
         
-        // Limpa campos
         document.getElementById('exitProductId').value = '';
         document.getElementById('exitQuantity').value = '';
         
@@ -152,7 +146,112 @@ async function registerExit() {
     }
 }
 
-// ===== HISTÓRICO =====
+//  BUSCA 
+function switchSearchTab(type) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.search-panel').forEach(panel => panel.classList.remove('active'));
+    
+    event.target.classList.add('active');
+    document.getElementById(`search-${type}`).classList.add('active');
+    
+    document.getElementById('searchResults').style.display = 'none';
+}
+
+async function searchById() {
+    const id = parseInt(document.getElementById('searchIdInput').value);
+    
+    if (!id) {
+        alert('Digite um ID válido!');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_URL}/products/${id}`);
+        
+        if (!response.ok) {
+            throw new Error('Produto não encontrado');
+        }
+        
+        const product = await response.json();
+        displaySearchResults([product]);
+        
+    } catch (error) {
+        alert('✕ ' + error.message);
+        document.getElementById('searchResults').style.display = 'none';
+    }
+}
+
+async function searchByCategory() {
+    const category = document.getElementById('searchCategorySelect').value;
+    
+    if (!category) {
+        alert('Selecione uma categoria!');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_URL}/products`);
+        if (!response.ok) throw new Error('Erro ao buscar produtos');
+        
+        const allProducts = await response.json();
+        const filtered = allProducts.filter(p => p.category === category);
+        
+        if (filtered.length === 0) {
+            alert('Nenhum produto encontrado nesta categoria');
+            document.getElementById('searchResults').style.display = 'none';
+            return;
+        }
+        
+        displaySearchResults(filtered);
+        
+    } catch (error) {
+        alert('✕ ' + error.message);
+    }
+}
+
+function displaySearchResults(products) {
+    const resultsDiv = document.getElementById('searchResults');
+    const gridDiv = document.getElementById('resultsGrid');
+    
+    resultsDiv.style.display = 'block';
+    
+    gridDiv.innerHTML = products.map(product => {
+        const lowStock = product.quantity <= product.reorderThreshold;
+        const outOfStock = product.quantity === 0;
+        
+        let badgeClass, badgeText;
+        if (outOfStock) {
+            badgeClass = 'badge-warning';
+            badgeText = '🔴 ESGOTADO';
+        } else if (lowStock) {
+            badgeClass = 'badge-warning';
+            badgeText = '⚠️ Baixo';
+        } else {
+            badgeClass = 'badge-ok';
+            badgeText = '✓ OK';
+        }
+        
+        return `
+            <div class="product-card">
+                <div class="card-header">
+                    <span class="card-id">#${product.id}</span>
+                    <span class="badge ${badgeClass}">${badgeText}</span>
+                </div>
+                <h3 class="card-title">${product.name}</h3>
+                <div class="card-info">
+                    <p><strong>Categoria:</strong> ${product.category}</p>
+                    <p><strong>Quantidade:</strong> ${product.quantity}</p>
+                    <p><strong>Estoque Mínimo:</strong> ${product.reorderThreshold}</p>
+                </div>
+                <button class="btn-delete-card" onclick="deleteProduct(${product.id}, false)">
+                    🗑️ DELETAR
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+
+// HISTÓRICO 
 let currentFilter = 'all';
 
 async function loadMovements(type = currentFilter) {
@@ -202,7 +301,7 @@ function filterMovements(type) {
     loadMovements(type);
 }
 
-// ===== ALERTAS DE REPOSIÇÃO =====
+// ALERTAS 
 async function loadRestockAlerts() {
     const container = document.getElementById('alerts-container');
     container.innerHTML = '<p class="empty-message">Carregando...</p>';
@@ -279,7 +378,7 @@ async function updateAlertsBadge() {
     }
 }
 
-// ===== ESTATÍSTICAS =====
+//  ESTATÍSTICAS 
 async function updateStats() {
     try {
         const response = await fetch(`${API_URL}/stock/report`);
@@ -297,7 +396,7 @@ async function updateStats() {
     }
 }
 
-// ===== LISTAR PRODUTOS (mantido com pequenas melhorias) =====
+//  LISTAR PRODUTOS 
 async function loadAllProducts() {
     const loading = document.getElementById('loading');
     const errorMessage = document.getElementById('error-message');
@@ -366,7 +465,7 @@ async function loadAllProducts() {
     }
 }
 
-// ===== DELETAR PRODUTO (mantido) =====
+// DELETAR PRODUTO 
 async function deleteProduct(id, reload = false) {
     if (!confirm('Deletar este produto?')) return;
     
@@ -375,14 +474,18 @@ async function deleteProduct(id, reload = false) {
         if (!response.ok) throw new Error('Erro ao deletar');
         
         alert('✓ Produto deletado!');
-        if (reload) loadAllProducts();
+        if (reload) {
+            loadAllProducts();
+        } else {
+            document.getElementById('searchResults').style.display = 'none';
+        }
         updateStats();
     } catch (error) {
         alert('✕ ' + error.message);
     }
 }
 
-// ===== UTILITÁRIOS =====
+// UTILITÁRIOS 
 function showMessage(elementId, message, type) {
     const messageBox = document.getElementById(elementId);
     if (!messageBox) return;
