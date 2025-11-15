@@ -14,8 +14,8 @@
             <span>Alertas de Reposição</span>
         </div>
         <div class="user-profile">
-            <span class="user-name">Sistema</span>
-            <div class="user-avatar">ST</div>
+            <span class="user-name">Usuário</span>
+            <div class="user-avatar">U</div>
         </div>
     </header>
 
@@ -24,22 +24,22 @@
             <div class="sidebar-section">
                 <h3>Gerenciamento</h3>
                 <button class="menu-btn active" onclick="showSection('cadastro')">
-                    <span class="icon">➕</span> CADASTRO
+                    <span class="icon"></span> CADASTRO
                 </button>
                 <button class="menu-btn" onclick="showSection('movimentacao')">
-                    <span class="icon">🔄</span> MOVIMENTAÇÃO
+                    <span class="icon"></span> MOVIMENTAÇÃO
                 </button>
                 <button class="menu-btn" onclick="showSection('busca')">
-                    <span class="icon">🔍</span> BUSCAR
+                    <span class="icon"></span> BUSCAR
                 </button>
                 <button class="menu-btn" onclick="showSection('todos')">
-                    <span class="icon">📋</span> TODOS ITENS
+                    <span class="icon"></span> TODOS ITENS
                 </button>
                 <button class="menu-btn" onclick="showSection('historico')">
-                    <span class="icon">📊</span> HISTÓRICO
+                    <span class="icon"></span> HISTÓRICO
                 </button>
                 <button class="menu-btn" onclick="showSection('alertas')">
-                    <span class="icon">⚠️</span> ALERTAS
+                    <span class="icon"></span> ALERTAS
                 </button>
             </div>
             
@@ -202,10 +202,10 @@
                     
                     <div class="search-tabs">
                         <button class="tab-btn active" onclick="switchSearchTab('id')">
-                            🔢 POR ID
+                             POR ID
                         </button>
                         <button class="tab-btn" onclick="switchSearchTab('categoria')">
-                            📁 POR CATEGORIA
+                             POR CATEGORIA
                         </button>
                     </div>
                     
@@ -551,7 +551,7 @@
                     badgeText = '⚠️ Baixo';
                 } else {
                     badgeClass = 'badge-ok';
-                    badgeText = '✓ OK';
+                    badgeText = 'OK';
                 }
                 
                 return `
@@ -649,7 +649,7 @@
                             <div class="alert-details">
                                 <p><strong>Estoque Atual:</strong> ${alert.currentStock}</p>
                                 <p><strong>Estoque Mínimo:</strong> ${alert.reorderThreshold}</p>
-                                <p class="suggestion">💡 Sugestão: Comprar ${alert.suggestedOrderQuantity} unidades</p>
+                                <p class="suggestion"> Sugestão: Comprar ${alert.suggestedOrderQuantity} unidades</p>
                             </div>
                             <button class="btn-restock" onclick="quickRestock(${alert.productId}, ${alert.suggestedOrderQuantity})">
                                 📥 REABASTECER
@@ -753,7 +753,7 @@
                                 statusText = '⚠️ Baixo';
                             } else {
                                 statusClass = 'status-ok';
-                                statusText = '✓ OK';
+                                statusText = 'OK';
                             }
                             
                             const row = document.createElement('tr');
